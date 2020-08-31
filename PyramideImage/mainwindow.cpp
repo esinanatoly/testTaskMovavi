@@ -1,23 +1,45 @@
 #include "mainwindow.h"
+#include "pyramidimage.h"
 
 #include <QApplication>
-#include <QScrollArea>
-#include <QImage>
 #include <QLabel>
 #include <QStandardPaths>
 #include <QFileDialog>
+#include <QComboBox>
 #include <QAction>
 #include <QMenuBar>
 #include <QImageReader>
 #include <QMessageBox>
+#include <QBoxLayout>
+#include <QScreen>
+
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
 	createMenu();
-	createWidgets();
-	setCentralWidget(scrollArea);
-	setWindowTitle("Image Viewer");
-	setFixedSize(500, 400);
+	QWidget *centralWidget = new QWidget;
+	pyramidWidget = new PyramidWidget;
+
+	QLabel *layersLabel = new QLabel(tr("Layers:"));
+	layersCombo = new QComboBox;
+	resLabel = new QLabel(tr("Resolution:"));
+	connect(layersCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+	        this, &MainWindow::updateLayer);
+
+	QHBoxLayout *controlsLayout = new QHBoxLayout;
+	controlsLayout->addWidget(layersLabel);
+	controlsLayout->addWidget(layersCombo, 1);
+	controlsLayout->addWidget(resLabel);
+	controlsLayout->addStretch(1);
+
+	QVBoxLayout *centralLayout = new QVBoxLayout;
+	centralLayout->addLayout(controlsLayout);
+	centralLayout->addWidget(pyramidWidget, 1);
+	centralWidget->setLayout(centralLayout);
+
+	setCentralWidget(centralWidget);
+	setWindowTitle("Pyramid Viewer");
+	resize(QGuiApplication::primaryScreen()->availableSize() * 1 / 4);
 }
 
 
@@ -32,15 +54,10 @@ bool MainWindow::loadFile(const QString &fileName)
 		                         reader.errorString()));
 		return false;
 	}
-	setDisplayedImage(newImage);
+	pyramidWidget->initImage(newImage);
+	updateImageResLabel(0);
+	updateLayersCombox();
 	return true;
-}
-
-void MainWindow::setDisplayedImage(const QImage &newImage)
-{
-	image = newImage;
-	imageLabel->setPixmap(QPixmap::fromImage(image));
-	imageLabel->adjustSize();
 }
 
 static void initializeImageFileDialog(QFileDialog &dialog)
@@ -80,15 +97,26 @@ void MainWindow::createMenu()
 	exitAct->setShortcut(tr("Ctrl+Q"));
 
 }
-
-void MainWindow::createWidgets()
+void MainWindow::updateLayer(int layerNumber)
 {
-	imageLabel = new QLabel;
-	imageLabel->setBackgroundRole(QPalette::Base);
-	imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-
-	scrollArea = new QScrollArea;
-	scrollArea->setBackgroundRole(QPalette::Base);
-	scrollArea->setWidget(imageLabel);
+	updateImageResLabel(layerNumber);
+	pyramidWidget->updateDisplayedLayer(layerNumber);
 }
+
+void MainWindow::updateImageResLabel(int layerNumber)
+{
+	resLabel->setText(QString("Resolution: %1 x %2").arg(pyramidWidget->getLayerWidth(layerNumber))
+	                                                .arg(pyramidWidget->getLayerHeight(layerNumber)));
+}
+
+void MainWindow::updateLayersCombox()
+{
+	layersCombo->clear();
+	int layerCnt = pyramidWidget->getLayersNumber();
+	for (int i = 0; i < layerCnt; i ++) {
+		layersCombo->addItem(QString::number(i));
+	}
+}
+
+
 

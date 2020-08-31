@@ -15,10 +15,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     mainwindow.cpp \
+    pyramidimage.cpp \
     main.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    pyramidimage.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
