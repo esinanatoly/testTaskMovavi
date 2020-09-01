@@ -22,3 +22,18 @@
 	<img src="images/app_ver2_2.jpg" >
 	<p>Вторая версия приложения</p>
 </div>
+
+4. Реализовать открытие нескольких файлов с возможностью их переключения. Отобразить список
+открытых файлов с помощью комбобокса. Список отсортировать в порядке увеличения
+диагонали изображения.
+
+<div align="center">
+	<img src="images/app_ver3_1.jpg" >
+	<img src="images/app_ver3_2.jpg" >
+	<img src="images/app_ver3_3.jpg" >
+	<img src="images/app_ver3_4.jpg" >
+	<img src="images/app_ver3_5.jpg" >
+	<img src="images/app_ver3_6.jpg" >
+	<p>Третья версия приложения</p>
+</div>
+
