@@ -53,7 +53,8 @@ int PyramidWidget::getLayersNumber()
 	return layersNumber;
 }
 
-void PyramidWidget::countLayersNumber() {
+void PyramidWidget::countLayersNumber()
+{
 	int imageHeight = image.height();
 	int imageWidth = image.width();
 
@@ -71,9 +72,10 @@ void PyramidWidget::countLayersNumber() {
 	}
 }
 
-void PyramidWidget::makeLayer(int layerNumber) {
+void PyramidWidget::makeLayer(int layerNumber)
+{
 	currentLayer = image;
-	for(int i = 0; i < layerNumber; i++ ) {
+	for (int i = 0; i < layerNumber; i++) {
 		currentLayer = currentLayer.scaled(static_cast<double>(currentLayer.width())/scaleFactor,
 		                                   static_cast<double>(currentLayer.height())/scaleFactor,
 		                                   Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -85,4 +87,10 @@ void PyramidWidget::updateDisplayedLayer()
 	QImage tmpImage = currentLayer.scaled(image.width(), image.height(),
 	                                      Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	setDisplayedImage(tmpImage);
+}
+
+void PyramidWidget::setScaleFactor(double newScaleFactor)
+{
+	scaleFactor = newScaleFactor;
+	countLayersNumber();
 }

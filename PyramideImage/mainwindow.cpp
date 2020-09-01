@@ -13,7 +13,8 @@
 #include <QMessageBox>
 #include <QBoxLayout>
 #include <QScreen>
-
+#include <QDoubleSpinBox>
+#include <QValidator>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -23,21 +24,36 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 	QLabel *filesLabel = new QLabel(tr("Files:"));
 	filesCombo = new QComboBox;
+	filesCombo->setEnabled(false);
 
 	connect(filesCombo, QOverload<const QString&>::of(&QComboBox::textActivated),
 	        this, &MainWindow::updateFile);
 
 	QLabel *layersLabel = new QLabel(tr("Layers:"));
 	layersCombo = new QComboBox;
-	resLabel = new QLabel(tr("Resolution:"));
+	layersCombo->setEnabled(false);
+
 	connect(layersCombo, QOverload<const QString&>::of(&QComboBox::textActivated),
 	        this, &MainWindow::updateLayer);
+
+	QLabel *scaleFactorLabel = new QLabel(tr("ScaleFactor:"));
+	scaleFactorSpinBox = new QDoubleSpinBox;
+	scaleFactorSpinBox->setSingleStep(0.1);
+	scaleFactorSpinBox->setRange(1.1, 5.0);
+	scaleFactorSpinBox->setEnabled(false);
+
+	connect(scaleFactorSpinBox,  QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+	        this, &MainWindow::updateScaleFactor);
+
+	resLabel = new QLabel(tr("Resolution:"));
 
 	QHBoxLayout *controlsLayout = new QHBoxLayout;
 	controlsLayout->addWidget(filesLabel);
 	controlsLayout->addWidget(filesCombo, 1);
 	controlsLayout->addWidget(layersLabel);
 	controlsLayout->addWidget(layersCombo, 1);
+	controlsLayout->addWidget(scaleFactorLabel);
+	controlsLayout->addWidget(scaleFactorSpinBox, 1);
 	controlsLayout->addWidget(resLabel);
 	controlsLayout->addStretch(1);
 
@@ -76,6 +92,13 @@ bool MainWindow::loadFile(const QString &filePath)
 	else {
 		loadedImages.push_back(LoadedImage(fileName, newImage));
 		updateFilesCombox();
+	}
+	static bool firstTime = true;
+	if (firstTime) {
+		firstTime = false;
+		filesCombo->setEnabled(true);
+		layersCombo->setEnabled(true);
+		scaleFactorSpinBox->setEnabled(true);
 	}
 	pyramidWidget->initImage(newImage);
 	updateImageResLabel();
@@ -151,7 +174,7 @@ void MainWindow::updateLayersCombox()
 {
 	layersCombo->clear();
 	int layerCnt = pyramidWidget->getLayersNumber();
-	for (int i = 0; i < layerCnt; i ++) {
+	for (int i = 0; i <= layerCnt; i ++) {
 		layersCombo->addItem(QString::number(i));
 	}
 }
@@ -165,4 +188,11 @@ void MainWindow::updateFilesCombox()
 		filesCombo->addItem(QString("%1").arg(image.getFileName()));
 	}
 	filesCombo->setCurrentText(currentFileName);
+}
+
+void MainWindow::updateScaleFactor()
+{
+	pyramidWidget->setScaleFactor(scaleFactorSpinBox->value());
+	updateLayer(QString::number(0));
+	updateLayersCombox();
 }

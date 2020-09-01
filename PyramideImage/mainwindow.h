@@ -7,6 +7,7 @@ class QLabel;
 class QScrollArea;
 class QImage;
 class QComboBox;
+class QDoubleSpinBox;
 class PyramidWidget;
 class LoadedImage;
 
@@ -22,6 +23,7 @@ private slots:
 	void open();
 	void updateLayer(QString layerNumberStr);
 	void updateFile(QString fileName);
+	void updateScaleFactor();
 
 private:
 	void createMenu();
@@ -32,6 +34,7 @@ private:
 	PyramidWidget *pyramidWidget;
 	QComboBox *filesCombo;
 	QComboBox *layersCombo;
+	QDoubleSpinBox *scaleFactorSpinBox;
 	QLabel *resLabel;
 	QVector<LoadedImage> loadedImages;
 };

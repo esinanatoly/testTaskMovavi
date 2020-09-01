@@ -17,6 +17,7 @@ public:
 	void initImage(const QImage &newImage);
 	void updateDisplayedLayer();
 	void makeLayer(int layerNumber);
+	void setScaleFactor(double newScaleFactor);
 
 private:
 	void createWidgets();
@@ -24,7 +25,7 @@ private:
 	void setDisplayedImage(const QImage &newImage);
 
 	int layersNumber;
-	double scaleFactor = 2.0;
+	double scaleFactor = 1.1;
 	QImage image;
 	QImage currentLayer;
 	QLabel *imageLabel;
