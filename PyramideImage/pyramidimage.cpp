@@ -25,13 +25,11 @@ void PyramidWidget::createWidgets()
 }
 void PyramidWidget::initImage(const QImage &newImage)
 {
-	if (layers.size() > 0) {
-		layers.clear();
-	}
-	layers.push_back(newImage);
+
+	image = newImage;
+	currentLayer = image;
 	countLayersNumber();
-	makeLayers();
-	setDisplayedImage(layers[0]);
+	setDisplayedImage(currentLayer);
 }
 
 void PyramidWidget::setDisplayedImage(const QImage &newImage)
@@ -40,14 +38,14 @@ void PyramidWidget::setDisplayedImage(const QImage &newImage)
 	imageLabel->adjustSize();
 }
 
-int PyramidWidget::getLayerWidth(int layersNumber)
+int PyramidWidget::getLayerWidth()
 {
-	return layers[layersNumber].width();
+	return currentLayer.width();
 }
 
-int PyramidWidget::getLayerHeight(int layersNumber)
+int PyramidWidget::getLayerHeight()
 {
-	return layers[layersNumber].height();
+	return currentLayer.height();
 }
 
 int PyramidWidget::getLayersNumber()
@@ -56,8 +54,8 @@ int PyramidWidget::getLayersNumber()
 }
 
 void PyramidWidget::countLayersNumber() {
-	int imageHeight = layers[0].height();
-	int imageWidth = layers[0].width();
+	int imageHeight = image.height();
+	int imageWidth = image.width();
 
 	int layerCounter = 0;
 	while (1) {
@@ -73,18 +71,18 @@ void PyramidWidget::countLayersNumber() {
 	}
 }
 
-void PyramidWidget::makeLayers() {
-	for(int i = 0; i < layersNumber; i++ ) {
-		QImage tmpImage = layers[i].scaled(static_cast<double>(layers[i].width())/scaleFactor,
-		                                   static_cast<double>(layers[i].height())/scaleFactor,
+void PyramidWidget::makeLayer(int layerNumber) {
+	currentLayer = image;
+	for(int i = 0; i < layerNumber; i++ ) {
+		currentLayer = currentLayer.scaled(static_cast<double>(currentLayer.width())/scaleFactor,
+		                                   static_cast<double>(currentLayer.height())/scaleFactor,
 		                                   Qt::KeepAspectRatio, Qt::SmoothTransformation);
-		layers.push_back(tmpImage);
 	}
 }
 
-void PyramidWidget::updateDisplayedLayer(int layerNumber)
+void PyramidWidget::updateDisplayedLayer()
 {
-	QImage tmpImage = layers[layerNumber].scaled(layers[0].width(), layers[0].height(),
-	                                             Qt::KeepAspectRatio, Qt::SmoothTransformation);
+	QImage tmpImage = currentLayer.scaled(image.width(), image.height(),
+	                                      Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	setDisplayedImage(tmpImage);
 }

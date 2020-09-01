@@ -11,21 +11,22 @@ class PyramidWidget : public QWidget
 
 public:
 	PyramidWidget(QWidget *parent = nullptr);
-	int getLayerWidth(int layerNumber);
-	int getLayerHeight(int layerNumber);
+	int getLayerWidth();
+	int getLayerHeight();
 	int getLayersNumber();
 	void initImage(const QImage &newImage);
-	void updateDisplayedLayer(int layerNumber);
+	void updateDisplayedLayer();
+	void makeLayer(int layerNumber);
 
 private:
 	void createWidgets();
 	void countLayersNumber();
-	void makeLayers();
 	void setDisplayedImage(const QImage &newImage);
 
 	int layersNumber;
 	double scaleFactor = 2.0;
-	QVector<QImage> layers;
+	QImage image;
+	QImage currentLayer;
 	QLabel *imageLabel;
 	QScrollArea *scrollArea;
 };

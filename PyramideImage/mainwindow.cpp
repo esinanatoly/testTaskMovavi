@@ -78,7 +78,7 @@ bool MainWindow::loadFile(const QString &filePath)
 		updateFilesCombox();
 	}
 	pyramidWidget->initImage(newImage);
-	updateImageResLabel(0);
+	updateImageResLabel();
 	updateLayersCombox();
 	return true;
 }
@@ -122,8 +122,9 @@ void MainWindow::createMenu()
 }
 void MainWindow::updateLayer(QString layerNumberStr)
 {
-	updateImageResLabel(layerNumberStr.toInt());
-	pyramidWidget->updateDisplayedLayer(layerNumberStr.toInt());
+	pyramidWidget->makeLayer(layerNumberStr.toInt());
+	updateImageResLabel();
+	pyramidWidget->updateDisplayedLayer();
 }
 
 void MainWindow::updateFile(QString fileName)
@@ -135,15 +136,15 @@ void MainWindow::updateFile(QString fileName)
 	}
 	else {
 		pyramidWidget->initImage(resLoadedImage->getImage());
-		updateImageResLabel(0);
+		updateImageResLabel();
 		updateLayersCombox();
 	}
 }
 
-void MainWindow::updateImageResLabel(int layerNumber)
+void MainWindow::updateImageResLabel()
 {
-	resLabel->setText(QString("Resolution: %1 x %2").arg(pyramidWidget->getLayerWidth(layerNumber))
-	                                                .arg(pyramidWidget->getLayerHeight(layerNumber)));
+	resLabel->setText(QString("Resolution: %1 x %2").arg(pyramidWidget->getLayerWidth())
+	                                                .arg(pyramidWidget->getLayerHeight()));
 }
 
 void MainWindow::updateLayersCombox()

@@ -27,7 +27,7 @@ private:
 	void createMenu();
 	void updateLayersCombox();
 	void updateFilesCombox();
-	void updateImageResLabel(int layerNumber);
+	void updateImageResLabel();
 
 	PyramidWidget *pyramidWidget;
 	QComboBox *filesCombo;
